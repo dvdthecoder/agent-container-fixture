@@ -1,2 +1,2 @@
 def hello_world():
-    print("Hello, World!")
+    return "Hello, World! run-e0c97a"
