@@ -12,5 +12,4 @@ def sum_to_n(n: int) -> int:
         >>> sum_to_n(0)
         0
     """
-    # BUG: range(1, n) excludes n — should be range(1, n + 1)
-    return sum(range(1, n))
+    return sum(range(1, n + 1))
