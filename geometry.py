@@ -3,7 +3,7 @@
 import math
 
 
-def calc_area_rect(width: float, height: float) -> float:
+def area_rectangle(width: float, height: float) -> float:
     """Return the area of a rectangle."""
     return width * height
 
