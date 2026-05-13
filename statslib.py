@@ -10,7 +10,12 @@ def mean(values: list[float]) -> float:
 
 def median(values: list[float]) -> float:
     """Return the median value of a list of numbers."""
-    raise NotImplementedError("median() is not implemented yet")
+    values.sort()
+mid = len(values) // 2
+if len(values) % 2 == 0:
+    return (values[mid - 1] + values[mid]) / 2
+else:
+    return values[mid]
 
 
 def variance(values: list[float]) -> float:
