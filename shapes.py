@@ -10,7 +10,7 @@ def is_square(width: float, height: float) -> bool:
 
 def scale_area_rect(width: float, height: float, factor: float) -> float:
     """Return the area of a rectangle scaled by factor."""
-    return calc_area_rect(width, height) * factor
+    return area_rectangle(width, height) * factor
 
 
 def largest_area(shapes: list[dict]) -> float:
