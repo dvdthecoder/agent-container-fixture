@@ -31,43 +31,36 @@ Before making any edit, write out every change required:
 
 Do not make any edit until the full plan is clear.
 
-### Step 2 — Apply every planned change
+### Step 2 — Choose the right editing tool
 
-Work through the plan completely. Do not stop after the first edit if more changes are required.
-Use the edit tool for each file that needs changing.
+**For implementing stub functions** (replacing a `raise NotImplementedError` body):
+Use `write` to rewrite the complete file. Do NOT use `edit` for function bodies.
+Reason: `write` lets you produce the whole file as natural code. `edit` requires
+encoding newlines and indentation inside a JSON string, which causes truncation and
+indentation bugs.
 
-### Step 3 — Indentation rule for multi-line edits
+**For small targeted changes** (renaming one identifier, fixing one line):
+Use `edit` with an `oldString` that includes the full function signature plus the line
+to replace — not just the single line being changed. More context = more reliable match.
 
-When replacing code that sits inside an indented block (e.g. inside a function), every line
-of the replacement must include the correct leading spaces exactly as they appear in the file.
+### Step 3 — Apply every planned change
 
-Correct — each line carries its own indent:
-```
-    sorted_vals = sorted(values)
-    mid = len(sorted_vals) // 2
-    if len(sorted_vals) % 2 == 0:
-        return (sorted_vals[mid - 1] + sorted_vals[mid]) / 2.0
-    return sorted_vals[mid]
-```
-
-Wrong — only the first line is indented, rest land at column 0:
-```
-    sorted_vals = sorted(values)
-mid = len(sorted_vals) // 2
-if len(sorted_vals) % 2 == 0:
-```
+Work through the plan completely. Do not stop after the first change.
+After writing or editing a file, immediately read it back to confirm the content is correct
+before moving to the next file.
 
 ### Step 4 — Verify with tests
 
-After all edits are applied, run the acceptance command. Only declare done when tests pass.
+After all changes are applied, run the acceptance command. Only declare done when tests pass.
+If tests fail, read the file that was changed and diagnose from the actual content — do not
+guess which function is broken.
 
 ---
 
 ## Tier 1 — single-line bug fix
 
-`sum_to_n()` in `mathlib.py` uses `range(1, n)` which excludes `n`.
-It should be `range(1, n + 1)`. Fix only this line — do not change the
-function signature, docstring, or any other file.
+`sum_to_n()` in `mathlib.py` uses `range(1, n)` but should use `range(1, n + 1)`.
+Fix only this line — do not change the function signature, docstring, or any other file.
 
 **Acceptance:** `pytest test_mathlib.py -q` — all 4 tests pass.
 
@@ -85,14 +78,19 @@ all tests in `test_statslib.py` pass. Do not modify the test file.
 
 **Plan (follow Steps 1–4 above):**
 1. Read `test_statslib.py` to understand expected behaviour for both functions.
-2. Read `statslib.py` to see the stubs.
-3. Implement `median()` — sort the list, return middle element (odd) or average of two middle elements (even). Include all 4 spaces of indentation on every line.
-4. Implement `variance()` — population variance: `sum((x - mean(values))**2 for x in values) / len(values)`. Include all 4 spaces of indentation on every mine.
-5. Both functions must be implemented before running tests.
+2. Read `statslib.py` to see the current file content.
+3. Use `write` to rewrite `statslib.py` with both `median()` and `variance()` fully
+   implemented — keep `mean()` unchanged, implement both stubs in the same write call.
+   - `median()`: sort the list, return middle element (odd length) or average of the two
+     middle elements (even length). Handle both cases.
+   - `variance()`: population variance — `sum((x - mean(values))**2 for x in values) / len(values)`.
+4. Read `statslib.py` back to confirm both functions are present and correctly indented.
+5. Run `pytest test_statslib.py -q` and confirm all 12 tests pass.
 
 **Notes:**
+- `mean()` is already implemented — do not remove it when rewriting.
 - `median()` must handle both odd- and even-length lists; sort first.
-- `variance()` is population variance: `sum((x - mean)² for x in values) / len(values)`.
+- `variance()` uses the existing `mean()` function in the same file.
 
 ---
 
@@ -111,9 +109,10 @@ and update every caller so that both test files pass.
 1. Read `test_geometry.py` — note the four expected new names.
 2. Read `geometry.py` — note the four old names.
 3. Read `shapes.py` — note which old names it imports and calls.
-4. Rename all four functions in `geometry.py`.
-5. Update `shapes.py`: fix the import line and every call site.
-6. Run acceptance tests — both `test_geometry.py` and `test_shapes.py` must pass.
+4. Use `write` to rewrite `geometry.py` with all four functions renamed.
+5. Use `write` to rewrite `shapes.py` with the import line and every call site updated.
+6. Read both files back to confirm changes are correct.
+7. Run `pytest test_geometry.py test_shapes.py -q` — both test files must pass.
 
 **Constraints:** only rename — do not change function bodies or add new logic.
 
