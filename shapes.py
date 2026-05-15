@@ -1,6 +1,6 @@
 """High-level shape helpers built on geometry.py."""
 
-from geometry import calc_area_circle, calc_area_rect, calc_perimeter_rect
+from geometry import area_circle, area_rectangle, perimeter_rectangle
 
 
 def is_square(width: float, height: float) -> bool:
@@ -21,7 +21,7 @@ def largest_area(shapes: list[dict]) -> float:
     areas = []
     for shape in shapes:
         if shape["type"] == "rect":
-            areas.append(calc_area_rect(shape["width"], shape["height"]))
+            areas.append(area_rectangle(shape["width"], shape["height"]))
         elif shape["type"] == "circle":
-            areas.append(calc_area_circle(shape["radius"]))
+            areas.append(area_circle(shape["radius"]))
     return max(areas) if areas else 0.0
