@@ -49,11 +49,14 @@ Work through the plan completely. Do not stop after the first change.
 After writing or editing a file, immediately read it back to confirm the content is correct
 before moving to the next file.
 
-### Step 4 — Verify with tests
+### Step 4 — Verify with tests, then signal done
 
-After all changes are applied, run the acceptance command. Only declare done when tests pass.
+After all changes are applied, run the acceptance command.
 If tests fail, read the file that was changed and diagnose from the actual content — do not
 guess which function is broken.
+
+Once all tests pass, call `task_complete(summary="...")` with a one-line summary of what was
+changed. This is the ONLY way to end the session — do not stop without calling it.
 
 ---
 
